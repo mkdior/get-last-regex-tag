@@ -1,11 +1,13 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Get latest release-tag sorted on specific release channel.'
+description: 'Based on the `tag-target`- returns the latest tag to be currently released in repository.'
+author: 'Hamza Tokuchi'
 inputs:
-  milliseconds: # change this
+  github-token:
+    description: 'Github access token.'
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  tag-target:
+    description: 'Which tag is to be targeted.'
+    required: true
 runs:
   using: 'node12'
   main: 'dist/index.js'
