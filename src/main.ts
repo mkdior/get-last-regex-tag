@@ -27,8 +27,8 @@ async function run(): Promise<void> {
     const baseError =
       'Something went wrong while trying to retrieve your releases.'
     const res = await git.request('GET  /repos/{owner}/{repo}/releases', {
-      owner,
-      repo
+      owner: owner,
+      repo: repo
     })
 
     // Check if our request was a success
