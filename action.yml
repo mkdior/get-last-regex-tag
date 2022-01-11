@@ -8,6 +8,9 @@ inputs:
   tag-target:
     description: 'Which tag is to be targeted.'
     required: true
+outputs:
+  tag-name:
+    description: 'Name of the previous release target-tag.'
 runs:
   using: 'node12'
   main: 'dist/index.js'

@@ -27,8 +27,8 @@ async function run(): Promise<void> {
     const baseError =
       'Something went wrong while trying to retrieve your releases.'
     const res = await git.request('GET /repos/{owner}/{repo}/releases', {
-      owner: owner,
-      repo: repo
+      owner,
+      repo
     })
 
     // Check if our request was a success
@@ -63,17 +63,15 @@ async function run(): Promise<void> {
     }
 
     // At this point we have either a match or matchTag == undefined
-    if (!matchTag) {
+    if (!matchTag || matchTag.length === 0) {
       matchTag = 'v0.0.0'
     } else {
-			if (matchTag.length > 0) {
-				matchTag = matchTag[0] // if we have a match we're dealing with an array of results
-		 } else {
-				matchTag = 'v0.0.0'
-		 }
+      if (matchTag.length > 0) {
+        matchTag = matchTag[0] // if we have a match we're dealing with an array of results
+      }
     }
 
-    core.setOutput('TARGET_TAG', matchTag)
+    core.setOutput('target-tag', matchTag)
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message)
