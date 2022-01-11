@@ -64,7 +64,9 @@ function run() {
                 return core.setFailed(`${baseError} Got status ${res.status} but expected status 200.`);
             }
             if (res.data.length === 0) {
-                return core.setFailed(`${baseError} Response contained no data. Ensure there are releases.`);
+                // In reality you don't want to error out here, just let the run finish and present
+                // our default version value. Handle this version tag with special care on repo-side.
+                return core.setOutput('target-tag', 'v0.0.0');
             }
             // Extract all releases
             const releaseTagNames = [];
