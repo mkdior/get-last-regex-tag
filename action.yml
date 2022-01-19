@@ -1,4 +1,4 @@
-name: 'Get latest release-tag sorted on specific release channel.'
+name: 'get-latest-release-tag'
 description: 'Based on the `tag-target`- returns the latest tag to be currently released in repository.'
 author: 'Hamza Tokuchi'
 inputs:
