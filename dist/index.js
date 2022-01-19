@@ -66,7 +66,7 @@ function run() {
             if (res.data.length === 0) {
                 // In reality you don't want to error out here, just let the run finish and present
                 // our default version value. Handle this version tag with special care on repo-side.
-                return core.setOutput('target-tag', 'v0.0.0');
+                return core.setOutput('tag-name', 'v0.0.0');
             }
             // Extract all releases
             const releaseTagNames = [];
@@ -94,7 +94,7 @@ function run() {
                     matchTag = matchTag[0]; // if we have a match we're dealing with an array of results
                 }
             }
-            core.setOutput('target-tag', matchTag);
+            core.setOutput('tag-name', matchTag);
         }
         catch (error) {
             if (error instanceof Error) {
