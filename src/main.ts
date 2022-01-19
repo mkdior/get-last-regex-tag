@@ -41,7 +41,7 @@ async function run(): Promise<void> {
     if (res.data.length === 0) {
       // In reality you don't want to error out here, just let the run finish and present
       // our default version value. Handle this version tag with special care on repo-side.
-      return core.setOutput('target-tag', 'v0.0.0')
+      return core.setOutput('tag-name', 'v0.0.0')
     }
 
     // Extract all releases
@@ -71,7 +71,7 @@ async function run(): Promise<void> {
       }
     }
 
-    core.setOutput('target-tag', matchTag)
+    core.setOutput('tag-name', matchTag)
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message)
