@@ -1,6 +1,8 @@
-name: 'get-latest-release-tag'
+name: 'get-last-release-tag'
 description: 'Based on the `tag-target`- returns the latest tag to be currently released in repository.'
 author: 'Hamza Tokuchi'
+icon: 'tag'  
+color: 'white'
 inputs:
   github-token:
     description: 'Github access token.'
