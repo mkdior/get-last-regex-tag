@@ -78,9 +78,9 @@ async function run(): Promise<void> {
       targetTag.tagName = 'v0.0.0'
     }
 
-		// Time to get the tag
-		// @TODO -->>> Fix the code so that we simply rely on this step for
-		// tag grabbing.
+    // Time to get the tag
+    // @TODO -->>> Fix the code so that we simply rely on this step for
+    // tag grabbing.
     const baseTagError =
       'Something went wrong while trying to retrieve your Tags.'
     const tagRes = await git.request('GET /repos/{owner}/{repo}/tags', {
@@ -96,17 +96,15 @@ async function run(): Promise<void> {
     }
 
     if (tagRes.data.length === 0) {
-      return core.setFailed(
-        `${baseTagError} There were no tags!`
-      )
+      return core.setFailed(`${baseTagError} There were no tags!`)
     }
 
-		for (const val of tagRes.data) {
-			if (val.name == targetTag.tagName) {
-				targetTag.tagSha = val.commit.sha
-				break;
-			}
-		}
+    for (const val of tagRes.data) {
+      if (val.name === targetTag.tagName) {
+        targetTag.tagSha = val.commit.sha
+        break
+      }
+    }
 
     core.setOutput('tag-name', targetTag.tagName)
     core.setOutput('tag-sha1', targetTag.tagSha)

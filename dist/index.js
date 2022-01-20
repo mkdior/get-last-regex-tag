@@ -54,16 +54,16 @@ function run() {
                 ? new RegExp(/^v[0-9]+\.[0-9]+\.[0-9]+-rc(\.[0-9]+)?$/)
                 : new RegExp(/^v[0-9]+\.[0-9]+\.[0-9]+$/);
             // Get all our releases
-            const baseError = 'Something went wrong while trying to retrieve your releases.';
-            const res = yield git.request('GET /repos/{owner}/{repo}/releases', {
+            const baseRlsError = 'Something went wrong while trying to retrieve your releases.';
+            const rlsRes = yield git.request('GET /repos/{owner}/{repo}/releases', {
                 owner,
                 repo
             });
             // Check if our request was a success
-            if (res.status !== 200) {
-                return core.setFailed(`${baseError} Got status ${res.status} but expected status 200.`);
+            if (rlsRes.status !== 200) {
+                return core.setFailed(`${baseRlsError} Got status ${rlsRes.status} but expected status 200.`);
             }
-            if (res.data.length === 0) {
+            if (rlsRes.data.length === 0) {
                 // In reality you don't want to error out here, just let the run finish and present
                 // our default version value. Handle this version tag with special care on repo-side.
                 core.setOutput('tag-name', 'v0.0.0');
@@ -71,7 +71,7 @@ function run() {
                 return;
             }
             const releaseTagNames = [];
-            for (const value of res.data) {
+            for (const value of rlsRes.data) {
                 releaseTagNames.push({
                     tagName: value.tag_name,
                     tagSha: value.target_commitish
@@ -93,6 +93,27 @@ function run() {
             // At this point we have either a match or ""
             if (targetTag.tagName === '') {
                 targetTag.tagName = 'v0.0.0';
+            }
+            // Time to get the tag
+            // @TODO -->>> Fix the code so that we simply rely on this step for
+            // tag grabbing.
+            const baseTagError = 'Something went wrong while trying to retrieve your Tags.';
+            const tagRes = yield git.request('GET /repos/{owner}/{repo}/tags', {
+                owner,
+                repo
+            });
+            // Check if our request was a success
+            if (tagRes.status !== 200) {
+                return core.setFailed(`${baseTagError} Got status ${tagRes.status} but expected status 200.`);
+            }
+            if (tagRes.data.length === 0) {
+                return core.setFailed(`${baseTagError} There were no tags!`);
+            }
+            for (const val of tagRes.data) {
+                if (val.name === targetTag.tagName) {
+                    targetTag.tagSha = val.commit.sha;
+                    break;
+                }
             }
             core.setOutput('tag-name', targetTag.tagName);
             core.setOutput('tag-sha1', targetTag.tagSha);
