@@ -66,35 +66,36 @@ function run() {
             if (res.data.length === 0) {
                 // In reality you don't want to error out here, just let the run finish and present
                 // our default version value. Handle this version tag with special care on repo-side.
-                return core.setOutput('tag-name', 'v0.0.0');
+                core.setOutput('tag-name', 'v0.0.0');
+                core.setOutput('tag-sha1', '');
+                return;
             }
-            // Extract all releases
             const releaseTagNames = [];
             for (const value of res.data) {
-                releaseTagNames.push(value.tag_name);
+                releaseTagNames.push({
+                    tagName: value.tag_name,
+                    tagSha: value.target_commitish
+                });
             }
             // Since our tags are ordered, simply loop and exit at first match
-            let matchTag;
+            let targetTag = { tagName: '', tagSha: '' };
             for (const val of releaseTagNames) {
-                const matchTotal = rexp.exec(val);
+                const matchTotal = rexp.exec(val.tagName);
                 if (!matchTotal || matchTotal.length === 0) {
                     continue;
                 }
                 else {
-                    matchTag = matchTotal;
+                    // If we find our tag pattern, break on first match
+                    targetTag = val;
                     break;
                 }
             }
-            // At this point we have either a match or matchTag == undefined
-            if (!matchTag || matchTag.length === 0) {
-                matchTag = 'v0.0.0';
+            // At this point we have either a match or ""
+            if (targetTag.tagName === '') {
+                targetTag.tagName = 'v0.0.0';
             }
-            else {
-                if (matchTag.length > 0) {
-                    matchTag = matchTag[0]; // if we have a match we're dealing with an array of results
-                }
-            }
-            core.setOutput('tag-name', matchTag);
+            core.setOutput('tag-name', targetTag.tagName);
+            core.setOutput('tag-sha1', targetTag.tagSha);
         }
         catch (error) {
             if (error instanceof Error) {

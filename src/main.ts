@@ -42,39 +42,41 @@ async function run(): Promise<void> {
       // In reality you don't want to error out here, just let the run finish and present
       // our default version value. Handle this version tag with special care on repo-side.
       core.setOutput('tag-name', 'v0.0.0')
-			core.setOutput('tag-sha1', '')
-			return
+      core.setOutput('tag-sha1', '')
+      return
     }
 
     // Extract all releases
-		type tagPair = { tagName: string; tagSha: string}
-		let releaseTagNames: tagPair[] = []
+    type tagPair = {
+      tagName: string
+      tagSha: string
+    }
+
+    const releaseTagNames: tagPair[] = []
     for (const value of res.data) {
-      releaseTagNames.push(
-				{
-					tagName: value.tag_name,
-					tagSha: value.target_commitish
-				}
-			)
+      releaseTagNames.push({
+        tagName: value.tag_name,
+        tagSha: value.target_commitish
+      })
     }
 
     // Since our tags are ordered, simply loop and exit at first match
-    let targetTag: tagPair = { tagName: '', tagSha: '' }
+    let targetTag: tagPair = {tagName: '', tagSha: ''}
     for (const val of releaseTagNames) {
       const matchTotal = rexp.exec(val.tagName)
       if (!matchTotal || matchTotal.length === 0) {
         continue
       } else {
-				// If we find our tag pattern, break on first match
+        // If we find our tag pattern, break on first match
         targetTag = val
         break
       }
     }
 
     // At this point we have either a match or ""
-    if (targetTag.tagName == '') {
+    if (targetTag.tagName === '') {
       targetTag.tagName = 'v0.0.0'
-    } 
+    }
 
     core.setOutput('tag-name', targetTag.tagName)
     core.setOutput('tag-sha1', targetTag.tagSha)
