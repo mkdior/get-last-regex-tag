@@ -51,7 +51,8 @@ async function run(): Promise<void> {
     }
 
     // Since our tags are ordered, simply loop and exit at first match
-    let matchTag
+    let matchTag: any
+		let matchSha: string = ""
     for (const val of releaseTagNames) {
       const matchTotal = rexp.exec(val)
       if (!matchTotal || matchTotal.length === 0) {
@@ -68,10 +69,13 @@ async function run(): Promise<void> {
     } else {
       if (matchTag.length > 0) {
         matchTag = matchTag[0] // if we have a match we're dealing with an array of results
+				matchSha = matchTag.target_commitish
       }
     }
 
     core.setOutput('tag-name', matchTag)
+		core.setOutput('tag-sha1', matchSha)
+
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message)

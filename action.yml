@@ -1,8 +1,9 @@
 name: 'get-last-release-tag'
 description: 'Based on the `tag-target`- returns the latest tag to be currently released in repository.'
 author: 'Hamza Tokuchi'
-icon: 'tag'  
-color: 'white'
+branding:
+  icon: 'tag'  
+  color: 'white'
 inputs:
   github-token:
     description: 'Github access token.'
@@ -13,6 +14,8 @@ inputs:
 outputs:
   tag-name:
     description: 'Name of the previous release target-tag.'
+  tag-sha1:
+    description: 'Sha-1 of the previous release target-tag.'
 runs:
   using: 'node12'
   main: 'dist/index.js'
